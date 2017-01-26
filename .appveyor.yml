@@ -2,7 +2,10 @@ build: false
 
 environment:
   matrix:
+    - PYTHON: "C:/Python33"
+    - PYTHON: "C:/Python34"
     - PYTHON: "C:/Python35"
+    - PYTHON: "C:/Python36"
 
 init:
   - "ECHO %PYTHON%"
@@ -10,4 +13,3 @@ init:
 
 test_script:
   - "%PYTHON%/python.exe setup.py test"
-
