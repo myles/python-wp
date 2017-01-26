@@ -1,7 +1,5 @@
 from setuptools import setup
 
-from wordpress._meta import __version__, __project_name__, __project_link__
-
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
@@ -15,13 +13,13 @@ requirements = [
 test_requirements = []
 
 setup(
-    name=__project_name__,
-    version=__version__,
+    name='python-wordpress',
+    version='0.1.0',
     author='Myles Braithwaite',
     author_email='me@mylesbraithwaite.com',
     description='A Python Library for WordPress.',
     keywords='wordpress',
-    url=__project_link__,
+    url='https://github.com/myles/python-wordpress',
     packages=['wordpress'],
     package_dir={'wordpress': 'wordpress'},
     include_package_data=True,
