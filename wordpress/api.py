@@ -3,7 +3,7 @@ from posixpath import join as urljoin
 import requests
 
 from ._meta import __version__, __project_name__, __project_link__
-from .models import Post, PostRevision, Page
+from .models import Post, PostRevision, Page, Category
 
 
 class WordPress(object):
@@ -142,12 +142,12 @@ class WordPress(object):
 
         return resp.json()
 
-    def list_post(self, context='view', page=1, pre_page=10, search=None,
-                  after=None, author=None, author_exclude=None, before=None,
-                  exclude=None, include=None, offset=None, order='desc',
-                  orderby='date', slug=None, status='publish',
-                  categories=None, cateogries_exclude=None, tags=None,
-                  tags_exclude=None, sticky=None):
+    def list_posts(self, context='view', page=1, pre_page=10, search=None,
+                   after=None, author=None, author_exclude=None, before=None,
+                   exclude=None, include=None, offset=None, order='desc',
+                   orderby='date', slug=None, status='publish',
+                   categories=None, cateogries_exclude=None, tags=None,
+                   tags_exclude=None, sticky=None):
         """
         Get a list of posts.
 
@@ -422,7 +422,7 @@ class WordPress(object):
         else:
             raise Exception(resp.json())
 
-    def list_post_revision(self, parent, context='view'):
+    def list_post_revisions(self, parent, context='view'):
         """
         List Post Revisions.
 
@@ -514,3 +514,116 @@ class WordPress(object):
         resp = self._delete('posts/{0}/revisions/{1}'.format(parent_id, pk))
 
         return PostRevision.parse(self, resp.json())
+
+    def list_categories(self, context='view', page=1, pre_page=10, search=None,
+                        exclude=None, include=None, order='asc',
+                        orderby='name', hide_empty=False, parent=None,
+                        post=None, slug=None):
+        """
+        Get a list of categories.
+
+        Arguments
+        ---------
+
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view, embed, edit
+        page : int
+            Current page of the collection.
+
+            Default: 1
+        pre_page : int
+            Maximum number of items to be returned in result set.
+
+            Default: 10
+        search : str
+            Limit results to those matching a string.
+        exclude : int
+            Ensure result set excludes specific IDs.
+
+            Default:
+        include : int
+            Limit result set to specific IDs.
+
+            Default:
+        order : str
+            Order sort attribute ascending or descending.
+
+            Default: asc
+
+            One of: asc, desc
+        orderby : str
+            Sort collection by term attribute.
+
+            Default: name
+
+            One of: id, include, name, slug, term_group, description, count
+        hide_empty : bool
+            Whether to hide terms not assigned to any posts.
+        parent : int/wordpress.models.Category
+            Limit result set to terms assigned to a specific parent.
+        post : int/wordpress.models.Post
+            Limit result set to terms assigned to a specific post.
+        slug : str
+            Limit result set to terms with a specific slug.
+
+        Returns
+        -------
+
+        list
+            A list of wordpress.models.Category.
+        """
+        if context not in ['view', 'embed', 'edit']:
+            raise ValueError('The context {0} is not allowed.'.format(context))
+
+        if order not in ['asc', 'desc']:
+            raise ValueError('The order {0} is not allowed.'.format(order))
+
+        if orderby not in ['id', 'include', 'name', 'slug', 'term_group',
+                           'description', 'count']:
+            raise ValueError('The order by {0} is not '
+                             'allowed.'.format(orderby))
+
+        if type(parent) == Category:
+            parent_id = Category.id
+        elif type(parent) == int:
+            parent_id = parent
+
+        if type(post) == Post:
+            post_id = Post.id
+        elif type(post) == int:
+            post_id = post
+
+        category_list = self._get('categories', params=locals())
+
+        return Category.parse_list(self, category_list)
+
+    def get_category(self, pk, context='view', password=None):
+        """
+        Retrieve a Category.
+
+        Arguments
+        ---------
+
+        pk : int
+            The category id you want to retrieve.
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view, embed, edit
+
+        Returns
+        -------
+
+        wordpress.models.Category
+        """
+        category = self._get('categories/{0}'.format(pk), params=locals())
+
+        return Category.parse(self, category)

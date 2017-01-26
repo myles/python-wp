@@ -123,6 +123,13 @@ class Post(Model):
         for k, v in json.items():
             if k in ['date', 'date_gmt', 'modified', 'modified_gmt']:
                 setattr(post, k, parse_iso8601(v))
+
+            elif k == 'categories':
+                category_list = ResultSet()
+                for category in v:
+                    category_list += [api.get_category(category)]
+                setattr(post, k, category_list)
+
             else:
                 setattr(post, k, v)
 
@@ -135,7 +142,7 @@ class Post(Model):
         return self._api.delete_post(self.id)
 
     def revisions(self, **kwargs):
-        return self._api.list_post_revision(self.id)
+        return self._api.list_post_revisions(self.id)
 
     def revision(self, pk, **kwargs):
         return self._api.get_post_revision(self.id, pk)
@@ -207,16 +214,16 @@ class PostRevision(Model):
 
     @classmethod
     def parse(cls, api, json):
-        post = cls(api)
-        setattr(post, '_json', json)
+        post_revision = cls(api)
+        setattr(post_revision, '_json', json)
 
         for k, v in json.items():
             if k in ['date', 'date_gmt', 'modified', 'modified_gmt']:
-                setattr(post, k, parse_iso8601(v))
+                setattr(post_revision, k, parse_iso8601(v))
             else:
-                setattr(post, k, v)
+                setattr(post_revision, k, v)
 
-        return post
+        return post_revision
 
     def destroy(self, **kwargs):
         return self._api.delete_post_revision(self.id)
@@ -230,7 +237,75 @@ class PostRevision(Model):
 
 
 class Category(Model):
-    pass
+    """
+    A WordPress Category
+
+    Arguments
+    ---------
+
+    id : int
+        Unique identifier for the term.
+
+        Context: view, embed, edit
+    count : int
+        Number of published posts for the term.
+
+        Context: view, edit
+
+    description : str
+        HTML description of the term.
+
+        Context: view, edit
+    link : str
+        URL of the term.
+
+        Context: view, embed, edit
+    name : str
+        HTML title for the term.
+
+        Context: view, embed, edit
+    slug : str
+        An alphanumeric identifier for the term unique to its type.
+
+        Context: view, embed, edit
+    taxonomy : str
+        Type attribution for the term.
+
+        Context: view, embed, edit
+
+        One of: category, post_tag, nav_menu, link_category, post_format
+    parent : int
+        The parent term ID.
+
+        Context: view, edit
+    meta : dict
+        Meta fields.
+
+        Context: view, edit
+    """
+
+    @classmethod
+    def parse(cls, api, json):
+        category = cls(api)
+        setattr(category, '_json', json)
+
+        for k, v in json.items():
+            setattr(category, k, v)
+
+        return category
+
+    def update(self, **kwargs):
+        return self._api.update_category(self.id)
+
+    def delete(self, **kwargs):
+        return self._api.delete_category(self.id)
+
+    def __eq__(self, compare):
+        """Compare two Posts."""
+        if isinstance(compare, Post):
+            return self.id == compare.id
+
+        raise NotImplementedError
 
 
 class Tag(Model):
