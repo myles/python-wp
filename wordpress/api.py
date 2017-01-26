@@ -94,7 +94,6 @@ class WordPress(object):
 
         return resp.json()
 
-
     def list_post(self, context='view', page=1, pre_page=10, search=None,
                   after=None, author=None, author_exclude=None, before=None,
                   exclude=None, include=None, offset=None, order='desc',
