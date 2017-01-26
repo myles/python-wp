@@ -129,16 +129,141 @@ class Post(Model):
         return post
 
     def update(self, **kwargs):
-        # return self._api.update_post(self.id)
-        raise NotImplementedError
+        return self._api.update_post(self.id)
 
-    def destroy(self, **kwargs):
-        # return self._api.destroy_post(self.id)
-        raise NotImplementedError
+    def delete(self, **kwargs):
+        return self._api.delete_post(self.id)
+
+    def revisions(self, **kwargs):
+        return self._api.list_post_revision(self.id)
+
+    def revision(self, pk, **kwargs):
+        return self._api.get_post_revision(self.id, pk)
 
     def __eq__(self, compare):
         """Compare two Posts."""
         if isinstance(compare, Post):
             return self.id == compare.id
 
-        return NotImplemented
+        raise NotImplementedError
+
+
+class PostRevision(Model):
+    """
+    A WordPress post object.
+
+    Arguments
+    ---------
+
+    author : int
+        The id for the author of the revision.
+
+        Context: view
+    date : datetime
+        The date the object was published.
+
+        Context: view
+    date_gmt : datetime
+        The date the object was published, as GMT.
+
+        Context: view
+    guid : dict
+        GUID for the object, as it exists in the database.
+
+        Context: view
+    id : int
+        Unique identifier for the object.
+
+        Context: view
+    modified : datetime
+        The date the object was last modified.
+
+        Context: view
+    modified_gmt : datetime
+        The date the object was last modified, as GMT.
+
+        Context: view
+    parent : int
+        The id for the parent of the object.
+
+        Context: view
+    slug : str
+        An alphanumeric identifier for the object unique to its type.
+
+        Context: view
+    title : str
+        Title for the object, as it exists in the database.
+
+        Context: view
+    content : str
+        Content for the object, as it exists in the database.
+
+        Context: view
+    excerpt : str
+        Excerpt for the object, as it exists in the database.
+
+        Context: view
+    """
+
+    @classmethod
+    def parse(cls, api, json):
+        post = cls(api)
+        setattr(post, '_json', json)
+
+        for k, v in json.items():
+            if k in ['date', 'date_gmt', 'modified', 'modified_gmt']:
+                setattr(post, k, parse_iso8601(v))
+            else:
+                setattr(post, k, v)
+
+        return post
+
+    def destroy(self, **kwargs):
+        return self._api.delete_post_revision(self.id)
+
+    def __eq__(self, compare):
+        """Compare two Posts."""
+        if isinstance(compare, Post):
+            return self.id == compare.id
+
+        raise NotImplementedError
+
+
+class Category(Model):
+    pass
+
+
+class Tag(Model):
+    pass
+
+
+class Page(Model):
+    pass
+
+
+class Comment(Model):
+    pass
+
+
+class Taxonomy(Model):
+    pass
+
+
+class Media(Model):
+    pass
+
+
+class User(Model):
+    pass
+
+
+class PostType(Model):
+    pass
+
+
+class PostStatus(Model):
+    pass
+
+
+class Setting(Model):
+    pass

@@ -3,7 +3,7 @@ from posixpath import join as urljoin
 import requests
 
 from ._meta import __version__, __project_name__, __project_link__
-from .models import Post
+from .models import Post, PostRevision, Page
 
 
 class WordPress(object):
@@ -32,13 +32,24 @@ class WordPress(object):
         }
 
     def _get_wp_api_url(self, url):
+        """
+        Private function for finding the WP-API URL.
+
+        Arguments
+        ---------
+
+        url : str
+            WordPress instance URL.
+        """
         resp = requests.head(url)
 
+        # Search the Links for rel="https://api.w.org/".
         wp_api_rel = resp.links.get('https://api.w.org/')
 
         if wp_api_rel:
             return wp_api_rel['url']
         else:
+            # TODO: Rasie a better exception to the rel doesn't exist.
             raise Exception
 
     def _get(self, endpoint, params={}):
@@ -65,6 +76,38 @@ class WordPress(object):
 
         if not resp.status_code == 200:
             msg = ('WordPress REST API returned the status code '
+                   '{0}.'.format(resp.status_code))
+            raise Exception(msg)
+
+        return resp.json()
+
+    def _post(self, endpoint, data={}, params={}):
+        """
+        Private function for making POST requests.
+
+        Arguments
+        ---------
+
+        endpoint : str
+            WordPress endpoint.
+        data : dict
+            Data to send.
+        params : dict
+            HTTP parameters to use when making the connection.
+
+        Returns
+        -------
+
+        dict/list
+            Returns the data from the endpoint.
+        """
+        url = urljoin(self.url, 'wp', self.version, endpoint)
+
+        resp = requests.get(url, data=data, params=params,
+                            headers=self.headers)
+
+        if not resp.status_code == 200:
+            msg = ('WordPress REST API returned the status code '
                    '{0}.'.foramt(resp.status_code))
             raise Exception(msg)
 
@@ -85,12 +128,17 @@ class WordPress(object):
         Returns
         -------
 
-        bool
-            Returns True if successfuly deleted.
+        dict/list
+            Returns the data from the endpoint.
         """
         url = urljoin(self.url, 'wp', self.version, endpoint)
 
         resp = requests.delete(url, params=params, headers=self.headers)
+
+        if not resp.status_code == 200:
+            msg = ('WordPress REST API returned the status code '
+                   '{0}.'.foramt(resp.status_code))
+            raise Exception(msg)
 
         return resp.json()
 
@@ -147,7 +195,10 @@ class WordPress(object):
             Limit result set to posts with one or more specific slugs.
         status : str
             Limit result set to posts assigned one or more statuses.
+
             Default: publish
+
+            One of: publish, future, draft, pending, private
         categories : str
             Limit result set to all items that have the specified term assigned
             in the categories taxonomy.
@@ -167,10 +218,9 @@ class WordPress(object):
         -------
 
         list
-            A list of Post.
+            A list of wordpress.models.Post.
         """
         if context not in ['view', 'embed', 'edit']:
-            # TODO: Better exception handling.
             raise ValueError('The context {0} is not allowed.'.format(context))
 
         if after:
@@ -180,17 +230,13 @@ class WordPress(object):
             before = before.isoformat()
 
         if order not in ['asc', 'desc']:
-            # TODO: Better exception handling.
             raise ValueError("You can't order {0}.".format(order))
 
         if orderby not in ['date', 'relevance', 'id', 'include', 'title',
                            'slug']:
-            # TODO: Better exception handling.
             raise ValueError("You can't order by {0}.".format(orderby))
 
-        if status not in ['publish']:
-            # TODO: Figureout what other options there are for status.
-            # TODO: Better exception handling.
+        if status not in ['publish', 'future', 'draft', 'pending', 'private']:
             raise ValueError("The status {0} is valid.".format(status))
 
         posts = self._get('posts', params=locals())
@@ -215,8 +261,145 @@ class WordPress(object):
             One of: view, embed, edit
         password : str
             The password for the post if it is password protected.
+
+        Returns
+        -------
+
+        wordpress.models.Post
         """
         post = self._get('posts/{0}'.format(pk), params=locals())
+
+        return Post.parse(self, post)
+
+    def create_post(self, date=None, date_gmt=None, slug=None, status=None,
+                    password=None, title=None, content=None, author=None,
+                    excerpt=None, featured_media=None, comment_status=None,
+                    ping_status=None, format=None, meta=None, sticky=None,
+                    template=None, categories=None, tags=None,
+                    liveblog_links=None):
+        """
+        Create a Post.
+
+        Arguments
+        ---------
+
+        date : datetime
+            The date the object was published, in the site’s timezone.
+        date_gmt : datetime
+            The date the object was published, as GMT.
+        slug : str
+            An alphanumeric identifier for the object unique to its type.
+        status : str
+            A named status for the object.
+
+            One of: publish, future, draft, pending, private
+        password : str
+            A password to protect access to the content and excerpt.
+        title : str
+            The title for the object.
+        content : str
+            The content for the object.
+        author : id
+            The ID for the author of the object.
+        excerpt : str
+            The excerpt for the object.
+        featured_media : int
+            The ID of the featured media for the object.
+        comment_status : str
+            Whether or not comments are open on the object.
+
+            One of: open, closed
+        ping_status : str
+            Whether or not the object can be pinged.
+
+            One of: open, closed
+        format : str
+            The format for the object.
+
+            One of: standard
+        meta : dict
+            Meta fields.
+        sticky : bool
+            Whether or not the object should be treated as sticky.
+        template : str
+            The theme file to use to display the object.
+
+            One of:
+        categories : str
+            The terms assigned to the object in the category taxonomy.
+        tags : str
+            The terms assigned to the object in the post_tag taxonomy.
+        liveblog_likes : str
+            The number of Liveblog Likes the post has.
+        """
+        post = self._post('posts', data=locals())
+
+        return Post.parse(self, post)
+
+    def update_post(self, pk, date=None, date_gmt=None, slug=None, status=None,
+                    password=None, title=None, content=None, author=None,
+                    excerpt=None, featured_media=None, comment_status=None,
+                    ping_status=None, format=None, meta=None, sticky=None,
+                    template=None, categories=None, tags=None,
+                    liveblog_links=None):
+        """
+        Update a Post.
+
+        Arguments
+        ---------
+
+        pk : int
+            The ID of the post you want to update.
+        date : datetime
+            The date the object was published, in the site’s timezone.
+        date_gmt : datetime
+            The date the object was published, as GMT.
+        slug : str
+            An alphanumeric identifier for the object unique to its type.
+        status : str
+            A named status for the object.
+
+            One of: publish, future, draft, pending, private
+        password : str
+            A password to protect access to the content and excerpt.
+        title : str
+            The title for the object.
+        content : str
+            The content for the object.
+        author : id
+            The ID for the author of the object.
+        excerpt : str
+            The excerpt for the object.
+        featured_media : int
+            The ID of the featured media for the object.
+        comment_status : str
+            Whether or not comments are open on the object.
+
+            One of: open, closed
+        ping_status : str
+            Whether or not the object can be pinged.
+
+            One of: open, closed
+        format : str
+            The format for the object.
+
+            One of: standard
+        meta : dict
+            Meta fields.
+        sticky : bool
+            Whether or not the object should be treated as sticky.
+        template : str
+            The theme file to use to display the object.
+
+            One of:
+        categories : str
+            The terms assigned to the object in the category taxonomy.
+        tags : str
+            The terms assigned to the object in the post_tag taxonomy.
+        liveblog_likes : str
+            The number of Liveblog Likes the post has.
+        """
+        resp = self._post('posts/{0}'.format(pk), data=locals())
 
         return Post.parse(self, post)
 
@@ -238,3 +421,96 @@ class WordPress(object):
             return True
         else:
             raise Exception(resp.json())
+
+    def list_post_revision(self, parent, context='view'):
+        """
+        List Post Revisions.
+
+        Arguments
+        ---------
+
+        parent : int/wordpress.models.Post/wordpress.models.Page
+            The id for the parent of the object.
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view
+
+        Returns
+        -------
+
+        list
+            A list of wordpress.models.PostRevision.
+        """
+        if type(parent) == int:
+            parent_id = parent
+        elif type(parent) in [Page, Post]:
+            parent_id = parent.id
+
+        resp = self._get('posts/{0}/revisions'.format(parent_id),
+                         params=locals())
+
+        return PostRevision.parse_list(self, resp.json())
+
+    def get_post_revision(self, parent, pk, context='view'):
+        """
+        Get a Post Revision.
+
+        Arguments
+        ---------
+
+        parent : int/wordpress.models.Post/wordpress.models.Page
+            The id for the parent of the object.
+        pk : int
+            Unique identifier for the object.
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view
+
+        Returns
+        -------
+
+        wordpress.models.PostRevision
+        """
+        if type(parent) == int:
+            parent_id = parent
+        elif type(parent) in [Page, Post]:
+            parent_id = parent.id
+
+        resp = self._get('posts/{0}/revisions/{1}'.format(parent_id, pk),
+                         params=locals())
+
+        return PostRevision.parse(self, resp.json())
+
+    def delete_post_revision(self, parent, pk):
+        """
+        Delete Post Revision.
+
+        Arguments
+        ---------
+
+        parent : int/wordpress.models.Post/wordpress.models.Page
+            The id for the parent of the object.
+        pk : int
+            Unique identifier for the object.
+
+        Returns
+        -------
+
+        dict
+        """
+        if type(parent) == int:
+            parent_id = parent
+        elif type(parent) in [Page, Post]:
+            parent_id = parent.id
+
+        resp = self._delete('posts/{0}/revisions/{1}'.format(parent_id, pk))
+
+        return PostRevision.parse(self, resp.json())
