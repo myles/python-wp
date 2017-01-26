@@ -159,7 +159,7 @@ class WordPress(object):
 
         posts = self._get('posts', params=locals())
 
-        return Post.parse_list(posts)
+        return Post.parse_list(self, posts)
 
     def get_post(self, pk, context='view', password=None):
         """
@@ -180,4 +180,4 @@ class WordPress(object):
         """
         post = self._get('posts/{0}'.format(pk), params=locals())
 
-        return Post.parse(post)
+        return Post.parse(self, post)

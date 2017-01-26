@@ -19,13 +19,27 @@ class ResultSet(list):
 
 class Model(object):
 
+    def __init__(self, api=None):
+        self._api = api
+
+    def __getstate__(self):
+        # pickle
+        pickle = dict(self.__dict__)
+
+        try:
+            del pickle['_api']  # do not pickle the API reference
+        except KeyError:
+            pass
+
+        return pickle
+
     @classmethod
-    def parse(cls, json):
+    def parse(cls, api, json):
         """Parse a JSON object into a model instance."""
         raise NotImplementedError
 
     @classmethod
-    def parse_list(cls, json_list):
+    def parse_list(cls, api, json_list):
         """
         Prase a list of JSON objects into a result set of model instances.
         """
@@ -33,7 +47,7 @@ class Model(object):
 
         for obj in json_list:
             if obj:
-                results.append(cls.parse(obj))
+                results.append(cls.parse(api, obj))
 
         return results
 
@@ -102,8 +116,8 @@ class Post(Model):
     """
 
     @classmethod
-    def parse(cls, json):
-        post = cls()
+    def parse(cls, api, json):
+        post = cls(api)
         setattr(post, '_json', json)
 
         for k, v in json.items():
@@ -113,3 +127,18 @@ class Post(Model):
                 setattr(post, k, v)
 
         return post
+
+    def update(self, **kwargs):
+        # return self._api.update_post(self.id)
+        raise NotImplementedError
+
+    def destroy(self, **kwargs):
+        # return self._api.destroy_post(self.id)
+        raise NotImplementedError
+
+    def __eq__(self, compare):
+        """Compare two Posts."""
+        if isinstance(compare, Post):
+            return self.id == compare.id
+
+        return NotImplemented
