@@ -5,6 +5,11 @@ Python WordPress
 .. image:: https://img.shields.io/travis/myles/python-wordpress.svg
         :target: https://travis-ci.org/myles/python-wordpress
 
+.. image:: https://codeclimate.com/github/myles/python-wordpress/badges/gpa.svg
+        :target: https://codeclimate.com/github/myles/python-wordpress
+        :alt: Code Climate
+
+
 .. image:: https://pyup.io/repos/github/myles/python-wordpress/shield.svg
         :target: https://pyup.io/repos/github/myles/python-wordpress/
         :alt: Updates
