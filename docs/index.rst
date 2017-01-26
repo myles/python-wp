@@ -1,0 +1,21 @@
+Welcome to Python WordPress's documentation!
+======================================
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   readme
+   installation
+   usage
+   contributing
+   {% if cookiecutter.create_author_file == 'y' -%}authors{% endif -%}
+   history
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

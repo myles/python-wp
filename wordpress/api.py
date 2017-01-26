@@ -12,8 +12,9 @@ class WordPress(object):
         """
         WordPress Library.
 
-        Paramerters
-        -----------
+        Arguments
+        ---------
+
         uri : str
             The WordPress REST API URL (ex https://example.org/wp-json).
         verify_ssl : bool
@@ -34,13 +35,15 @@ class WordPress(object):
         """
         Private function for making GET requests.
 
-        Paramenters
-        -----------
+        Arguments
+        ---------
+
         endpoint : str
             WordPress endpoint.
 
         Returns
         -------
+
         dict/list
             Returns the data from the endpoint.
         """
@@ -49,8 +52,9 @@ class WordPress(object):
         resp = requests.get(url, params=params, headers=self.headers)
 
         if not resp.status_code == 200:
-            # TODO: Better exception handling.
-            raise Exception
+            msg = ('WordPress REST API returned the status code '
+                   '{0}.'.foramt(resp.status_code))
+            raise Exception(msg)
 
         return resp.json()
 
@@ -63,12 +67,15 @@ class WordPress(object):
         """
         Get a list of posts.
 
-        Paramenters
-        -----------
+        Arguments
+        ---------
+
         context : str
             Scope under which the request is made; determines fields present in
             response.
+
             Default: view
+
             One of: view, embed, edit
         page : int
             Current page of the collection.
@@ -92,7 +99,9 @@ class WordPress(object):
             Offset the result set by a specific number of items.
         order : str
             Order sort attribute ascending or descending.
+
             Default: desc
+
             One of: asc, desc
         orderby : str
             Sort collection by object attribute.
@@ -120,12 +129,13 @@ class WordPress(object):
 
         Returns
         -------
+
         list
             A list of Post.
         """
         if context not in ['view', 'embed', 'edit']:
             # TODO: Better exception handling.
-            raise Exception
+            raise ValueError('The context {0} is not allowed.'.format(context))
 
         if after:
             after = after.isoformat()
@@ -135,17 +145,17 @@ class WordPress(object):
 
         if order not in ['asc', 'desc']:
             # TODO: Better exception handling.
-            raise Exception
+            raise ValueError("You can't order {0}.".format(order))
 
         if orderby not in ['date', 'relevance', 'id', 'include', 'title',
                            'slug']:
             # TODO: Better exception handling.
-            raise Exception
+            raise ValueError("You can't order by {0}.".format(orderby))
 
         if status not in ['publish']:
             # TODO: Figureout what other options there are for status.
             # TODO: Better exception handling.
-            raise Exception
+            raise ValueError("The status {0} is valid.".format(status))
 
         posts = self._get('posts', params=locals())
 
@@ -155,12 +165,15 @@ class WordPress(object):
         """
         Retrieve a Post.
 
-        Paramenters
-        -----------
+        Arguments
+        ---------
+
         context : str
             Scope under which the request is made; determines fields present in
             response.
+
             Default: view
+
             One of: view, embed, edit
         password : str
             The password for the post if it is password protected.
