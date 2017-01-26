@@ -7,7 +7,7 @@ from wordpress import WordPress
 class TestWordPress(unittest.TestCase):
 
     def setUp(self):
-        self.wp = WordPress('http://demo.wp-api.org/wp-json/')
+        self.wp = WordPress('http://demo.wp-api.org/')
 
     def test_get_404(self):
         with self.assertRaises(Exception):

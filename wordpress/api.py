@@ -8,19 +8,19 @@ from .models import Post
 
 class WordPress(object):
 
-    def __init__(self, uri, verify_ssl=True):
+    def __init__(self, url, verify_ssl=True):
         """
         WordPress Library.
 
         Arguments
         ---------
 
-        uri : str
-            The WordPress REST API URL (ex https://example.org/wp-json).
+        url : str
+            The WordPress URL (ex https://example.org/).
         verify_ssl : bool
             Should we verify that the WordPress site is using a good SSL cert.
         """
-        self.uri = uri
+        self.url = self._get_wp_api_url(url)
         self.version = 'v2'
 
         self.headers = {
@@ -31,6 +31,16 @@ class WordPress(object):
             )
         }
 
+    def _get_wp_api_url(self, url):
+        resp = requests.head(url)
+
+        wp_api_rel = resp.links.get('https://api.w.org/')
+
+        if wp_api_rel:
+            return wp_api_rel['url']
+        else:
+            raise Exception
+
     def _get(self, endpoint, params={}):
         """
         Private function for making GET requests.
@@ -40,6 +50,8 @@ class WordPress(object):
 
         endpoint : str
             WordPress endpoint.
+        params : dict
+            HTTP parameters when making the connection.
 
         Returns
         -------
@@ -47,7 +59,7 @@ class WordPress(object):
         dict/list
             Returns the data from the endpoint.
         """
-        url = urljoin(self.uri, 'wp', self.version, endpoint)
+        url = urljoin(self.url, 'wp', self.version, endpoint)
 
         resp = requests.get(url, params=params, headers=self.headers)
 
@@ -57,6 +69,31 @@ class WordPress(object):
             raise Exception(msg)
 
         return resp.json()
+
+    def _delete(self, endpoint, params={}):
+        """
+        Private function for making DELETE requests.
+
+        Arguments
+        ---------
+
+        endpoint : str
+            WordPress endpoint.
+        params : dict
+            HTTP parameters when making the connection.
+
+        Returns
+        -------
+
+        bool
+            Returns True if successfuly deleted.
+        """
+        url = urljoin(self.url, 'wp', self.version, endpoint)
+
+        resp = requests.delete(url, params=params, headers=self.headers)
+
+        return resp.json()
+
 
     def list_post(self, context='view', page=1, pre_page=10, search=None,
                   after=None, author=None, author_exclude=None, before=None,
@@ -168,6 +205,8 @@ class WordPress(object):
         Arguments
         ---------
 
+        pk : in
+            The post id you want to retrieve.
         context : str
             Scope under which the request is made; determines fields present in
             response.
@@ -181,3 +220,22 @@ class WordPress(object):
         post = self._get('posts/{0}'.format(pk), params=locals())
 
         return Post.parse(self, post)
+
+    def delete_post(self, pk, force=False):
+        """
+        Delete a Post.
+
+        Arguments
+        ---------
+
+        pk : int
+            The post id you want to delete.
+        force : bool
+            Whether to bypass trash and force deletion.
+        """
+        resp = self._delete('posts/{0}'.format(pk), params=locals())
+
+        if resp.status_code == 200:
+            return True
+        else:
+            raise Exception(resp.json())
