@@ -1,0 +1,13 @@
+build: false
+
+environment:
+  matrix:
+    - PYTHON: "C:/Python35"
+
+init:
+  - "ECHO %PYTHON%"
+  - ps: "ls C:/Python*"
+
+test_script:
+  - "%PYTHON%/python.exe setup.py test"
+
