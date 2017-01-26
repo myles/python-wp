@@ -9,7 +9,7 @@ To use Python WordPress in a project::
 
 Get a list of posts::
 
-    wp.list_post()
+    wp.list_posts()
 
 Retrieve a post::
 

@@ -13,35 +13,47 @@ class TestWordPress(unittest.TestCase):
         with self.assertRaises(Exception):
             self.wp._get('404')
 
-    def test_list_post(self):
-        posts = self.wp.list_post()
+    def test_post_404(self):
+        with self.assertRaises(Exception):
+            self.wp._post('404')
+
+    def test_delete_404(self):
+        with self.assertRaises(Exception):
+            self.wp._delete('404')
+
+    def test_list_posts(self):
+        posts = self.wp.list_posts()
         posts.ids()
 
-    def test_list_post_after(self):
-        posts = self.wp.list_post(after=datetime.datetime.now())
+    def test_list_posts_after(self):
+        posts = self.wp.list_posts(after=datetime.datetime.now())
         self.assertFalse(posts)
 
-    def test_list_post_before(self):
-        posts = self.wp.list_post(before=datetime.datetime.now())
+    def test_list_posts_before(self):
+        posts = self.wp.list_posts(before=datetime.datetime.now())
         self.assertTrue(posts)
 
-    def test_list_post_context(self):
+    def test_list_posts_context(self):
         with self.assertRaises(ValueError):
-            self.wp.list_post(context='test')
+            self.wp.list_posts(context='test')
 
-    def test_list_post_order(self):
+    def test_list_posts_order(self):
         with self.assertRaises(ValueError):
-            self.wp.list_post(order='test')
+            self.wp.list_posts(order='test')
 
-    def test_list_post_orderby(self):
+    def test_list_posts_orderby(self):
         with self.assertRaises(ValueError):
-            self.wp.list_post(orderby='test')
+            self.wp.list_posts(orderby='test')
 
-    def test_list_post_status(self):
+    def test_list_posts_status(self):
         with self.assertRaises(ValueError):
-            self.wp.list_post(status='test')
+            self.wp.list_posts(status='test')
 
     def test_get_post(self):
         post = self.wp.get_post(470)
         post.id
         self.assertTrue(post)
+
+    def test_list_categories(self):
+        categories = self.wp.list_categories()
+        self.assertTrue(categories)
