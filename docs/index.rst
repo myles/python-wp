@@ -1,16 +1,16 @@
-Welcome to Python WordPress's documentation!
-======================================
+.. include:: ../README.rst
 
 Contents:
+---------
 
 .. toctree::
    :maxdepth: 2
 
-   readme
    installation
    usage
+   modules
    contributing
-   {% if cookiecutter.create_author_file == 'y' -%}authors{% endif -%}
+   authors
    history
 
 Indices and tables

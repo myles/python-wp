@@ -17,8 +17,3 @@ Features
 --------
 
 * TODO
-
-Credits
--------
-
-* Joshua Roesslein
