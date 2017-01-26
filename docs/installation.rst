@@ -12,7 +12,7 @@ To install Python WordPress, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install python-wordpress
+    $ pip install python-wp
 
 This is the preferred method to install Python WordPress, as it will always install the most recent stable release.
 
@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/myles/python-wordpress
+    $ git clone git://github.com/myles/python-wp
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/myles/python-wordpress/tarball/master
+    $ curl  -OL https://github.com/myles/python-wp/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/myles/python-wordpress
-.. _tarball: https://github.com/myles/python-wordpress/tarball/master
+.. _Github repo: https://github.com/myles/python-wp
+.. _tarball: https://github.com/myles/python-wp/tarball/master

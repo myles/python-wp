@@ -8,3 +8,5 @@ coverage==4.3.4
 Sphinx==1.5.2
 sphinxcontrib-napoleon==0.6.0
 bpython==0.16
+twine==1.8.1
+

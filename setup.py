@@ -13,13 +13,13 @@ requirements = [
 test_requirements = []
 
 setup(
-    name='python-wordpress',
-    version='0.1.0',
+    name='python-wp',
+    version='1.0.0',
     author='Myles Braithwaite',
     author_email='me@mylesbraithwaite.com',
     description='A Python Library for WordPress.',
     keywords='wordpress',
-    url='https://github.com/myles/python-wordpress',
+    url='https://github.com/myles/python-wp',
     packages=['wordpress'],
     package_dir={'wordpress': 'wordpress'},
     include_package_data=True,
