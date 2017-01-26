@@ -9,6 +9,10 @@ Python WordPress
         :target: https://pyup.io/repos/github/myles/python-wordpress/
         :alt: Updates
 
+.. image:: https://readthedocs.org/projects/python-wordpress/badge/?version=master
+        :target: http://python-wordpress.readthedocs.io/en/master/?badge=master
+        :alt: Documentation Status
+
 A Python library for interacting with WordPress REST API.
 
 * Free software: MIT License
