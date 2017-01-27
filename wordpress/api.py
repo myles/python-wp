@@ -403,7 +403,7 @@ class WordPress(object):
         liveblog_likes : str
             The number of Liveblog Likes the post has.
         """
-        resp = self._post('posts/{0}'.format(pk), data=locals())
+        post = self._post('posts/{0}'.format(pk), data=locals())
 
         return Post.parse(self, post)
 
