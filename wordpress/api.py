@@ -31,6 +31,8 @@ class WordPress(object):
             )
         }
 
+    # Private Methods
+
     def _get_wp_api_url(self, url):
         """
         Private function for finding the WP-API URL.
@@ -141,6 +143,8 @@ class WordPress(object):
             raise Exception(msg)
 
         return resp.json()
+
+    # Post Methods
 
     def list_posts(self, context='view', page=1, pre_page=10, search=None,
                    after=None, author=None, author_exclude=None, before=None,
@@ -422,6 +426,8 @@ class WordPress(object):
         else:
             raise Exception(resp.json())
 
+    # Post Reivion Methods
+
     def list_post_revisions(self, parent, context='view'):
         """
         List Post Revisions.
@@ -514,6 +520,8 @@ class WordPress(object):
         resp = self._delete('posts/{0}/revisions/{1}'.format(parent_id, pk))
 
         return PostRevision.parse(self, resp.json())
+
+    # Category Methods
 
     def list_categories(self, context='view', page=1, pre_page=10, search=None,
                         exclude=None, include=None, order='asc',
@@ -627,3 +635,117 @@ class WordPress(object):
         category = self._get('categories/{0}'.format(pk), params=locals())
 
         return Category.parse(self, category)
+
+    # Tag Methods
+
+    def list_tags(self, **kwargs):
+        raise NotImplementedError
+
+    def get_tag(self, **kwargs):
+        raise NotImplementedError
+
+    def create_tag(self, **kwargs):
+        raise NotImplementedError
+
+    def update_tag(self, **kwargs):
+        raise NotImplementedError
+
+    def delete_tag(self, **kwargs):
+        raise NotImplementedError
+
+    # Page Methods
+
+    def list_pages(self, **kwargs):
+        raise NotImplementedError
+
+    def get_page(self, **kwargs):
+        raise NotImplementedError
+
+    def create_page(self, **kwargs):
+        raise NotImplementedError
+
+    def update_page(self, **kwargs):
+        raise NotImplementedError
+
+    def delete_page(self, **kwargs):
+        raise NotImplementedError
+
+    # Comment Methods
+
+    def list_comments(self, **kwargs):
+        raise NotImplementedError
+
+    def get_comment(self, **kwargs):
+        raise NotImplementedError
+
+    def create_comment(self, **kwargs):
+        raise NotImplementedError
+
+    def update_comment(self, **kwargs):
+        raise NotImplementedError
+
+    def delete_comment(self, **kwargs):
+        raise NotImplementedError
+
+    # Taxonomy Methods
+
+    def list_taxonomies(self, **kwargs):
+        raise NotImplementedError
+
+    def get_taxonomy(self, **kwargs):
+        raise NotImplementedError
+
+    # Media Methods
+
+    def list_media(self, **kwargs):
+        raise NotImplementedError
+
+    def get_media(self, **kwargs):
+        raise NotImplementedError
+
+    def create_media(self, **kwargs):
+        raise NotImplementedError
+
+    def update_media(self, **kwargs):
+        raise NotImplementedError
+
+    def delete_media(self, **kwargs):
+        raise NotImplementedError
+
+    # User Methods
+
+    def list_users(self, **kwargs):
+        raise NotImplementedError
+
+    def get_user(self, **kwargs):
+        raise NotImplementedError
+
+    def create_user(self, **kwargs):
+        raise NotImplementedError
+
+    def update_user(self, **kwargs):
+        raise NotImplementedError
+
+    def delete_user(self, **kwargs):
+        raise NotImplementedError
+
+    # Post Type Methods
+
+    def list_post_types(self, **kwargs):
+        raise NotImplementedError
+
+    def get_post_type(self, **kwargs):
+        raise NotImplementedError
+
+    # Post Status Methods
+
+    def list_post_statuses(self, **kwargs):
+        raise NotImplementedError
+
+    def get_post_status(self, **kwargs):
+        raise NotImplementedError
+
+    # Setting Methods
+
+    def update_setting(self, **kwargs):
+        raise NotImplementedError
