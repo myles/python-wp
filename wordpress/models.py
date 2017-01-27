@@ -126,9 +126,19 @@ class Post(Model):
 
             elif k == 'categories':
                 category_list = ResultSet()
+
                 for category in v:
-                    category_list += [api.get_category(category)]
+                    category_list.append(api.get_category(category))
+
                 setattr(post, k, category_list)
+
+            elif k =='tags':
+                tag_list = ResultSet()
+
+                for tag in v:
+                    tag_list.append(api.get_tag(tag))
+
+                setattr(post, k, tag_list)
 
             else:
                 setattr(post, k, v)
@@ -302,14 +312,77 @@ class Category(Model):
 
     def __eq__(self, compare):
         """Compare two Posts."""
-        if isinstance(compare, Post):
+        if isinstance(compare, Category):
             return self.id == compare.id
 
         raise NotImplementedError
 
 
 class Tag(Model):
-    pass
+    """
+    A WordPress post object.
+
+    Arguments
+    ---------
+
+    id : int
+        Unique identifier for the term.
+
+        Context: view, embed, edit
+    count : int
+        Number of published posts for the term.
+
+        Context: view, edit
+    description : str
+        HTML description of the term.
+
+        Context: view, edit
+    link : str
+        URL of the term.
+
+        Context: view, embed, edit
+    name : str
+        HTML title for the term.
+
+        Context: view, embed, edit
+    slug : str
+        An alphanumeric identifier for the term unique to its type.
+
+        Context: view, embed, edit
+    taxonomy : str
+        Type attribution for the term.
+
+        Context: view, embed, edit
+
+        One of: category, post_tag, nav_menu, link_category, post_format
+    meta : dict
+        Meta fields.
+
+        Context: view, edit
+    """
+
+    @classmethod
+    def parse(cls, api, json):
+        tag = cls(api)
+        setattr(tag, '_json', json)
+
+        for k, v in json.items():
+            setattr(tag, k, v)
+
+        return tag
+
+    def update(self, **kwargs):
+        return self._api.update_tag(self.id)
+
+    def delete(self, **kwargs):
+        return self._api.delete_tag(self.id)
+
+    def __eq__(self, compare):
+        """Compare two Posts."""
+        if isinstance(compare, Tag):
+            return self.id == compare.id
+
+        raise NotImplementedError
 
 
 class Page(Model):
@@ -337,7 +410,58 @@ class PostType(Model):
 
 
 class PostStatus(Model):
-    pass
+    """
+    A WordPress post object.
+
+    Arguments
+    ---------
+
+    name : str
+        The title for the resource.
+
+        Context: embed, view, edit
+    private : bool
+        Whether posts with this resource should be private.
+
+        Context: edit
+    protected : bool
+        Whether posts with this resource should be protected.
+
+        Context: edit
+    public : bool
+        Whether posts of this resource should be shown in the front end of the
+        site.
+
+        Context: view, edit
+    queryable : bool
+        Whether posts with this resource should be publicly-queryable.
+
+        Context: view, edit
+    show_in_list : bool
+        Whether to include posts in the edit listing for their post type.
+
+        Context: edit
+    slug : str
+        An alphanumeric identifier for the resource.
+
+        Context: embed, view, edit
+    """
+    @classmethod
+    def parse(cls, api, json):
+        post_status = cls(api)
+        setattr(post_status, '_json', json)
+
+        for k, v in json.items():
+            setattr(post_status, k, v)
+
+        return post_status
+
+    def __eq__(self, compare):
+        """Compare two Posts."""
+        if isinstance(compare, PostStatus):
+            return self.id == compare.id
+
+        raise NotImplementedError
 
 
 class Setting(Model):
