@@ -117,6 +117,7 @@ class Post(Model):
 
     @classmethod
     def parse(cls, api, json):
+        """Parse a JSON object into a model instance."""
         post = cls(api)
         setattr(post, '_json', json)
 
@@ -132,7 +133,7 @@ class Post(Model):
 
                 setattr(post, k, category_list)
 
-            elif k =='tags':
+            elif k == 'tags':
                 tag_list = ResultSet()
 
                 for tag in v:
@@ -146,15 +147,19 @@ class Post(Model):
         return post
 
     def update(self, **kwargs):
+        """Update the post."""
         return self._api.update_post(self.id)
 
     def delete(self, **kwargs):
+        """Delete the post."""
         return self._api.delete_post(self.id)
 
     def revisions(self, **kwargs):
+        """Lookup revisions of the post."""
         return self._api.list_post_revisions(self.id)
 
     def revision(self, pk, **kwargs):
+        """Get a revision of the post."""
         return self._api.get_post_revision(self.id, pk)
 
     def __eq__(self, compare):

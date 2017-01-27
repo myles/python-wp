@@ -14,8 +14,8 @@ Python WordPress
         :target: https://pyup.io/repos/github/myles/python-wp/
         :alt: Updates
 
-.. image:: https://readthedocs.org/projects/python-wp/badge/?version=master
-        :target: http://python-wp.readthedocs.io/en/master/?badge=master
+.. image:: https://readthedocs.org/projects/python-wordpress/badge/?version=master
+        :target: http://python-wordpress.readthedocs.io/en/master/?badge=master
         :alt: Documentation Status
 
 A Python library for interacting with WordPress REST API.
