@@ -141,6 +141,9 @@ class Post(Model):
 
                 setattr(post, k, tag_list)
 
+            elif k == 'status':
+                setattr(post, k, api.get_post_status(v))
+
             else:
                 setattr(post, k, v)
 

@@ -2,8 +2,8 @@ from posixpath import join as urljoin
 
 import requests
 
+from .models import *
 from ._meta import __version__, __project_name__, __project_link__
-from .models import Post, PostRevision, Page, Category
 
 
 class WordPress(object):
@@ -239,9 +239,6 @@ class WordPress(object):
         if orderby not in ['date', 'relevance', 'id', 'include', 'title',
                            'slug']:
             raise ValueError("You can't order by {0}.".format(orderby))
-
-        if status not in ['publish', 'future', 'draft', 'pending', 'private']:
-            raise ValueError("The status {0} is valid.".format(status))
 
         posts = self._get('posts', params=locals())
 
@@ -610,7 +607,7 @@ class WordPress(object):
 
         return Category.parse_list(self, category_list)
 
-    def get_category(self, pk, context='view', password=None):
+    def get_category(self, pk, context='view'):
         """
         Retrieve a Category.
 
@@ -632,17 +629,118 @@ class WordPress(object):
 
         wordpress.models.Category
         """
+        if context not in ['view', 'embed', 'edit']:
+            raise ValueError('The context {0} is not allowed.'.format(context))
+
         category = self._get('categories/{0}'.format(pk), params=locals())
 
         return Category.parse(self, category)
 
     # Tag Methods
 
-    def list_tags(self, **kwargs):
-        raise NotImplementedError
+    def list_tags(self, context='view', page=1, pre_page=10, search=None,
+                  include=[], offset=0, order='asc', orderby='name',
+                  hide_empty=False, post=None, slug=None):
+        """
+        Get a list of tags.
 
-    def get_tag(self, **kwargs):
-        raise NotImplementedError
+        Arguments
+        ---------
+
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view, embed, edit
+        page : int
+            Current page of the collection.
+
+            Default: 1
+        per_page : int
+            Maximum number of items to be returned in result set.
+
+            Default: 10
+        search : str
+            Limit results to those matching a string.
+        exclude : str
+            Ensure result set excludes specific IDs.
+
+            Default:
+        include : list
+            Limit result set to specific IDs.
+
+            Default:
+        offset : int
+            Offset the result set by a specific number of items.
+        order : str
+            Order sort attribute ascending or descending.
+
+            Default: asc
+
+            One of: asc, desc
+        orderby : str
+            Sort collection by term attribute.
+
+            Default: name
+
+            One of: id, include, name, slug, term_group, description, count
+        hide_empty : bool
+            Whether to hide terms not assigned to any posts.
+        post : int
+            Limit result set to terms assigned to a specific post.
+        slug : str
+            Limit result set to terms with a specific slug.
+
+        Returns
+        -------
+
+        list
+            A list of wordpress.models.Category.
+        """
+        if context not in ['view', 'embed', 'edit']:
+            raise ValueError('The context {0} is not allowed.'.format(context))
+
+        if order not in ['asc', 'desc']:
+            raise ValueError("You can't order {0}.".format(order))
+
+        if orderby not in ['id', 'include', 'name', 'slug', 'term_group',
+                           'description', 'count']:
+            raise ValueError("You can't order by {0}.".format(orderby))
+
+        tag_list = self._get('tags', params=locals())
+
+        return Category.parse_list(self, tag_list)
+
+    def get_tag(self, pk, context='view'):
+        """
+        Retrieve a Tag.
+
+        Arguments
+        ---------
+
+        pk : int
+            The tag id you want to retrieve.
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view, embed, edit
+
+        Returns
+        -------
+
+        wordpress.models.Tag
+        """
+        if context not in ['view', 'embed', 'edit']:
+            raise ValueError('The context {0} is not allowed.'.format(context))
+
+        tag = self._get('tags/{0}'.format(pk), params=locals())
+
+        return Tag.parse(self, tag)
 
     def create_tag(self, **kwargs):
         raise NotImplementedError
@@ -739,13 +837,101 @@ class WordPress(object):
 
     # Post Status Methods
 
-    def list_post_statuses(self, **kwargs):
-        raise NotImplementedError
+    def list_post_statuses(self, context='view'):
+        """
+        Get a list of post statuses.
 
-    def get_post_status(self, **kwargs):
-        raise NotImplementedError
+        Arguments
+        ---------
+
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view, embed, edit
+
+        Returns
+        -------
+
+        list
+            A list of wordpress.models.PostStatus
+        """
+        if context not in ['view', 'embed', 'edit']:
+            raise ValueError('The context {0} is not allowed.'.format(context))
+
+        post_status_list = self._get('statuses', params=locals())
+
+        return PostStatus.parse_list(self, post_status_list)
+
+    def get_post_status(self, slug, context='view'):
+        """
+        Retrieve a Post statuses
+
+        Arguments
+        ---------
+
+        slug : str
+            The name of the status.
+        context : str
+            Scope under which the request is made; determines fields present in
+            response.
+
+            Default: view
+
+            One of: view, embed, edit
+
+        Returns
+        -------
+
+        wordpress.models.PostStatus
+        """
+        if context not in ['view', 'embed', 'edit']:
+            raise ValueError('The context {0} is not allowed.'.format(context))
+
+        post_status = self._get('statuses/{0}'.format(slug), params=locals())
 
     # Setting Methods
 
-    def update_setting(self, **kwargs):
-        raise NotImplementedError
+    def update_setting(self, title=None, description=None, url=None,
+                       email=None, timezone=None, date_format=None,
+                       time_format=None, start_of_week=None, language=None,
+                       use_smilies=None, default_category=None,
+                       default_post_format=None, post_pre_page=None):
+        """
+        Update WordPress settings.
+
+        Arguments
+        ---------
+
+        title : str
+            Site title.
+        description : str
+            Site description.
+        url : str
+            Site URL.
+        email : str
+            This address is used for admin purposes. If you change this we will
+            send you an email at your new address to confirm it. The new
+            address will not become active until confirmed.
+        timezone : str
+            A city in the same timezone as you.
+        date_format : str
+            A date format for all date strings.
+        time_format : str
+            A time format for all time strings.
+        start_of_week : int
+            A day number of the week that the week should start on.
+        language : str
+            WordPress locale code.
+        use_smilies : bool
+            Convert emoticons like :-) and :-P to graphics on display.
+        default_category : int
+            Default category.
+        default_post_format : str
+            Default post format.
+        posts_per_page : int
+            Blog pages show at most.
+        """
+        return self._post('settings', params=locals())
