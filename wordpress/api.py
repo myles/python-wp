@@ -2,8 +2,8 @@ from posixpath import join as urljoin
 
 import requests
 
-from .models import *
-from ._meta import __version__, __project_name__, __project_link__
+from ._meta import __project_link__, __project_name__, __version__
+from .models import Category, Page, Post, PostRevision, PostStatus, Tag
 
 
 class WordPress(object):

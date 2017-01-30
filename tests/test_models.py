@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime
 from os.path import abspath, dirname, join, realpath
 
-from wordpress.models import ResultSet, Tag, Category, Post
+from wordpress.models import Category, Post, ResultSet, Tag
 
 fixture_dir = abspath(join(dirname(realpath(__file__)), 'fixtures'))
 

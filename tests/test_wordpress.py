@@ -1,5 +1,5 @@
-import unittest
 import datetime
+import unittest
 
 from wordpress import WordPress
 
@@ -44,10 +44,6 @@ class TestWordPress(unittest.TestCase):
     def test_list_posts_orderby(self):
         with self.assertRaises(ValueError):
             self.wp.list_posts(orderby='test')
-
-    def test_list_posts_status(self):
-        with self.assertRaises(ValueError):
-            self.wp.list_posts(status='test')
 
     def test_get_post(self):
         post = self.wp.get_post(470)
