@@ -26,3 +26,13 @@ Features
 --------
 
 * TODO
+
+Quick Start
+-----------
+
+    >>> from wordpress import WordPress
+    >>> wp = WordPress('http://example.org/')
+    >>> posts = wp.list_posts()
+    >>> for p in posts:
+    ...     print('{title[rendered]}: {link}'.format(**p._json))
+    Hello, World: http://example.org/2017/01/30/hello-world
