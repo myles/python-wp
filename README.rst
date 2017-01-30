@@ -4,15 +4,11 @@ Python WordPress
 
 .. image:: https://img.shields.io/travis/myles/python-wp.svg
         :target: https://travis-ci.org/myles/python-wp
-
-.. image:: https://codeclimate.com/github/myles/python-wp/badges/gpa.svg
-        :target: https://codeclimate.com/github/myles/python-wp
-        :alt: Code Climate
-
+        :alt: CI Status
 
 .. image:: https://pyup.io/repos/github/myles/python-wp/shield.svg
         :target: https://pyup.io/repos/github/myles/python-wp/
-        :alt: Updates
+        :alt: Dependencies Status
 
 .. image:: https://readthedocs.org/projects/python-wordpress/badge/?version=master
         :target: http://python-wordpress.readthedocs.io/en/master/?badge=master
