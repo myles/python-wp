@@ -6,7 +6,7 @@ flake8==3.3.0
 flake8-isort==2.2
 tox==2.6.0
 coverage==4.3.4
-Sphinx==1.5.4
+Sphinx==1.5.5
 sphinxcontrib-napoleon==0.6.1
 bpython==0.16
 twine==1.8.1
