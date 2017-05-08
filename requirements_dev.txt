@@ -5,7 +5,7 @@ watchdog==0.8.3
 flake8==3.3.0
 flake8-isort==2.2
 tox==2.7.0
-coverage==4.3.4
+coverage==4.4
 Sphinx==1.5.5
 sphinxcontrib-napoleon==0.6.1
 bpython==0.16
