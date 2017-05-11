@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[dev-packages]
+bumpversion = "*"
+flake8 = "*"
+flake8-isort = "*"
+tox = "*"
+coverage = "*"
+Sphinx = "*"
+sphinxcontrib-napoleon = "*"
+bpython = "*"
+twine = "*"
+
+[packages]
+requests = "*"
