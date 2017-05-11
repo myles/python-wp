@@ -482,9 +482,9 @@ class WordPress(object):
 
         wordpress.models.PostRevision
         """
-        if type(parent) == int:
+        if isinstance(parent, int):
             parent_id = parent
-        elif type(parent) in [Page, Post]:
+        elif isinstance(parent, Page) or isinstance(parent, Post):
             parent_id = parent.id
 
         resp = self._get('posts/{0}/revisions/{1}'.format(parent_id, pk),
@@ -509,9 +509,9 @@ class WordPress(object):
 
         dict
         """
-        if type(parent) == int:
+        if isinstance(parent, int):
             parent_id = parent
-        elif type(parent) in [Page, Post]:
+        elif isinstance(parent, Page) or isinstance(parent, Post):
             parent_id = parent.id
 
         resp = self._delete('posts/{0}/revisions/{1}'.format(parent_id, pk))
@@ -593,14 +593,14 @@ class WordPress(object):
             raise ValueError('The order by {0} is not '
                              'allowed.'.format(orderby))
 
-        if type(parent) == Category:
+        if isinstance(parent, Category):
             parent_id = Category.id
-        elif type(parent) == int:
+        elif isinstance(parent, int):
             parent_id = parent
 
-        if type(post) == Post:
+        if isinstance(post, Post):
             post_id = Post.id
-        elif type(post) == int:
+        elif isinstance(post, int):
             post_id = post
 
         category_list = self._get('categories', params=locals())
