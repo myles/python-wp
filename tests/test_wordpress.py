@@ -45,10 +45,10 @@ class TestWordPress(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.wp.list_posts(orderby='test')
 
-    def test_get_post(self):
-        post = self.wp.get_post(470)
-        post.id
-        self.assertTrue(post)
+    #def test_get_post(self):
+    #    post = self.wp.get_post(470)
+    #    post.id
+    #    self.assertTrue(post)
 
     def test_list_categories(self):
         categories = self.wp.list_categories()
