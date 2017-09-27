@@ -2,10 +2,7 @@ language: python
 python: 3.6
 
 env:
-  - TOXENV=py33
-  - TOXENV=py34
   - TOXENV=py36
-  - TOXENV=flake8-py3
 
 install: pip install -U tox
 
