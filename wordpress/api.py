@@ -110,7 +110,7 @@ class WordPress(object):
 
         if not resp.status_code == 200:
             msg = ('WordPress REST API returned the status code '
-                   '{0}.'.foramt(resp.status_code))
+                   '{0}.'.format(resp.status_code))
             raise Exception(msg)
 
         return resp.json()
