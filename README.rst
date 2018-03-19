@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp?ref=badge_shield)
+
 ================
 Python WordPress
 ================
@@ -32,3 +34,7 @@ Quick Start
     >>> for p in posts:
     ...     print('{title[rendered]}: {link}'.format(**p._json))
     Hello, World: http://example.org/2017/01/30/hello-world
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp?ref=badge_large)
