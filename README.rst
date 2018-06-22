@@ -14,6 +14,10 @@ Python WordPress
         :target: http://python-wordpress.readthedocs.io/en/master/?badge=master
         :alt: Documentation Status
 
+.. image:: https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp.svg?type=shield
+        :target: https://app.fossa.io/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp?ref=badge_shield
+        :alt: FOSSA Status
+
 A Python library for interacting with WordPress REST API.
 
 * Free software: MIT License
