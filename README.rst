@@ -1,5 +1,3 @@
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp?ref=badge_shield)
-
 ================
 Python WordPress
 ================
@@ -15,6 +13,10 @@ Python WordPress
 .. image:: https://readthedocs.org/projects/python-wordpress/badge/?version=master
         :target: http://python-wordpress.readthedocs.io/en/master/?badge=master
         :alt: Documentation Status
+
+.. image:: https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp.svg?type=shield
+        :target: https://app.fossa.io/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp?ref=badge_shield
+        :alt: FOSSA Status
 
 A Python library for interacting with WordPress REST API.
 
@@ -34,7 +36,3 @@ Quick Start
     >>> for p in posts:
     ...     print('{title[rendered]}: {link}'.format(**p._json))
     Hello, World: http://example.org/2017/01/30/hello-world
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmyles%2Fpython-wp?ref=badge_large)
